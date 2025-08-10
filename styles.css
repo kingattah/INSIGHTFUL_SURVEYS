@@ -973,7 +973,7 @@ body {
     .nav-menu.active {
         left: 0;
     }
-    
+
     .nav-link {
         padding: 1rem;
         border-bottom: 1px solid var(--border-color);
@@ -1023,7 +1023,7 @@ body {
         gap: 2rem;
         margin-top: 3rem;
     }
-    
+
     .stat-item {
         min-width: auto;
     }
@@ -1156,12 +1156,12 @@ body {
     
     .hero-content {
         padding: 0 0.75rem;
-    }
-    
+}
+
     .hero-text h1 {
         font-size: 2rem;
     }
-    
+
     .hero-text p {
         font-size: 1rem;
     }
@@ -1353,7 +1353,7 @@ body {
     .section-header h2 {
         font-size: 1.5rem;
     }
-    
+
     .btn {
         padding: 0.875rem 1.25rem;
         font-size: 0.9rem;
@@ -1509,15 +1509,15 @@ body {
     }
     
     /* Better focus indicators for mobile */
-    .btn:focus,
-    .nav-link:focus,
-    input:focus,
+.btn:focus,
+.nav-link:focus,
+input:focus,
     textarea:focus,
     select:focus {
         outline: 3px solid var(--primary-color);
-        outline-offset: 2px;
-    }
-    
+    outline-offset: 2px;
+}
+
     /* Improved mobile scrolling */
     .nav-menu {
         -webkit-overflow-scrolling: touch;
