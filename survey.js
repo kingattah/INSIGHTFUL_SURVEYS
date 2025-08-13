@@ -18,7 +18,7 @@ class SurveyManager {
         // Check if user came from company selection
         const companyData = sessionStorage.getItem('currentCompany');
         if (!companyData) {
-            this.showError('No company selected. Please go back to companies page.');
+            this.showError('No institution selected. Please go back to survey page.');
             return;
         }
         

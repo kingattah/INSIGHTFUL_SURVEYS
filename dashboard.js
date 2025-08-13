@@ -88,16 +88,17 @@ class DashboardManager {
     async loadSurveyData() {
         console.log('Loading survey data...');
         try {
-            // In a real application, this would fetch from an API
-            // For now, we'll simulate loading data from localStorage or create sample data
+            // Clear any existing sample data to ensure clean state
+            this.clearSampleData();
+            
+            // Load data from localStorage only - no random data generation
             this.surveyData = this.getStoredSurveyData();
             console.log('Stored survey data:', this.surveyData.length, 'items');
             
             if (this.surveyData.length === 0) {
-                console.log('No stored data found, creating sample data...');
-                // Create sample data for demonstration
-                this.surveyData = this.createSampleData();
-                console.log('Sample data created:', this.surveyData.length, 'items');
+                console.log('No stored data found. Dashboard will show empty state.');
+                // Don't create sample data - just show empty dashboard
+                this.showInfo('No survey responses found. Data will appear here once users complete surveys.');
             } else {
                 console.log(`Loaded ${this.surveyData.length} existing survey responses`);
             }
@@ -123,65 +124,35 @@ class DashboardManager {
         }
     }
     
-    createSampleData() {
-        const sampleCompanies = [
-            { id: 'unilever', name: 'Unilever' },
-            { id: 'nestle', name: 'Nestle' },
-            { id: 'nnpc', name: 'NNPC' },
-            { id: 'guiness', name: 'Guinness' },
-            { id: 'reedemers', name: 'Reedemers' },
-            { id: 'suntory', name: 'Suntory' },
-            { id: 'upfield', name: 'Upfield' },
-            { id: 'tgi', name: 'TGI' },
-            { id: 'ison', name: 'ISON' },
-            { id: 'friesland', name: 'Friesland' },
-            { id: 'nbplc', name: 'NB Plc' }
-        ];
-        
-        const sampleData = [];
-        const now = new Date();
-        
-        // Generate sample responses for the last 30 days
-        for (let i = 0; i < 25; i++) {
-            const company = sampleCompanies[Math.floor(Math.random() * sampleCompanies.length)];
-            const date = new Date(now.getTime() - Math.random() * 30 * 24 * 60 * 60 * 1000);
-            
-            const sampleResponse = {
-                timestamp: date.toISOString(),
-                company_id: company.id,
-                company_name: company.name,
-                survey_id: 'network_infrastructure',
-                survey_title: 'Network Infrastructure Assessment',
-                full_name: `Sample User ${i + 1}`,
-                position: `Position ${i + 1}`,
-                email: `user${i + 1}@example.com`,
-                phone: `+234${Math.floor(Math.random() * 900000000) + 100000000}`
-            };
-            
-            // Generate sample responses for up to 50 questions
-            for (let q = 1; q <= 50; q++) {
-                const questionKey = `question_${q}`;
-                const responseOptions = [
-                    'Option A',
-                    'Option B', 
-                    'Option C',
-                    'Option D',
-                    'Sample text response',
-                    'Yes',
-                    'No',
-                    'Maybe',
-                    'Not applicable',
-                    'Sample detailed response'
-                ];
-                sampleResponse[questionKey] = responseOptions[Math.floor(Math.random() * responseOptions.length)];
+    // Sample data generation method removed to prevent random data creation
+    // createSampleData() {
+    //     // This method has been removed to stop random data generation
+    //     // In a real application, data should come from actual survey submissions
+    //     // or be loaded from a database/API
+    // }
+    
+    clearSampleData() {
+        // Clear any existing sample data from localStorage
+        // This ensures the dashboard starts with a clean state
+        try {
+            const stored = localStorage.getItem('surveyResponses');
+            if (stored) {
+                const data = JSON.parse(stored);
+                // Check if the data looks like sample data (contains "Sample User" or similar patterns)
+                const isSampleData = data.some(item => 
+                    item.full_name && item.full_name.includes('Sample User') ||
+                    item.email && item.email.includes('@example.com')
+                );
+                
+                if (isSampleData) {
+                    console.log('Detected sample data, clearing localStorage');
+                    localStorage.removeItem('surveyResponses');
+                    this.surveyData = [];
+                }
             }
-            
-            sampleData.push(sampleResponse);
+        } catch (error) {
+            console.error('Error clearing sample data:', error);
         }
-        
-        // Store sample data
-        localStorage.setItem('surveyResponses', JSON.stringify(sampleData));
-        return sampleData;
     }
     
 
@@ -658,6 +629,36 @@ class DashboardManager {
                 successDiv.parentNode.removeChild(successDiv);
             }
         }, 3000);
+    }
+    
+    showInfo(message) {
+        // Create a temporary info message
+        const infoDiv = document.createElement('div');
+        infoDiv.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            color: #1d4ed8;
+            padding: 1rem;
+            border-radius: 10px;
+            z-index: 10001;
+            max-width: 300px;
+        `;
+        infoDiv.innerHTML = `
+            <i class="fas fa-info-circle"></i>
+            <span style="margin-left: 0.5rem;">${message}</span>
+        `;
+        
+        document.body.appendChild(infoDiv);
+        
+        // Remove after 5 seconds
+        setTimeout(() => {
+            if (infoDiv.parentNode) {
+                infoDiv.parentNode.removeChild(infoDiv);
+            }
+        }, 5000);
     }
     
 

@@ -47,7 +47,7 @@ A professional tech survey platform that delivers actionable data and drives inn
 ```
 NETWEB/
 ├── index.html              # Main homepage
-├── companies.html          # Company selection page
+├── companies.html          # Educational institution survey page
 ├── survey.html            # Survey interface
 ├── admin.html             # Admin login page
 ├── dashboard.html         # Admin dashboard

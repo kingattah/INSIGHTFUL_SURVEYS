@@ -244,6 +244,16 @@ body {
     min-height: 44px; /* Touch-friendly minimum height */
     justify-content: center;
     align-items: center;
+    z-index: 1000; /* Ensure it's above other elements */
+}
+
+/* Ensure hamburger is visible on smaller screens */
+@media (max-width: 1024px) {
+    .hamburger {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
 }
 
 .bar {
@@ -950,7 +960,18 @@ body {
     
     /* Mobile Navigation */
     .hamburger {
-        display: flex;
+        display: flex !important; /* Force display on mobile */
+        position: relative;
+        z-index: 1001;
+        margin-left: auto; /* Ensure it stays on the right but visible */
+        margin-right: 0; /* Remove any right margin */
+    }
+    
+    /* Ensure nav-container has proper layout for mobile */
+    .nav-container {
+        position: relative;
+        justify-content: space-between;
+        padding-right: 1rem; /* Ensure right padding for hamburger visibility */
     }
 
     .nav-menu {
@@ -967,7 +988,8 @@ body {
         gap: 1rem;
         max-height: calc(100vh - 70px);
         overflow-y: auto;
-        -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+        -webkit-overflow-scrolling: touch;
+        z-index: 1000;
     }
 
     .nav-menu.active {
@@ -1152,6 +1174,14 @@ body {
     
     .nav-container {
         padding: 0 1rem;
+        position: relative; /* Ensure proper positioning context */
+        justify-content: space-between;
+    }
+    
+    .hamburger {
+        position: relative; /* Use relative positioning instead of absolute */
+        z-index: 1001;
+        margin-left: auto; /* Push to the right */
     }
     
     .hero-content {
@@ -1378,6 +1408,14 @@ body {
     /* Extra small navigation */
     .nav-container {
         padding: 0 0.75rem;
+        position: relative;
+        justify-content: space-between;
+    }
+    
+    .hamburger {
+        position: relative; /* Use relative positioning instead of absolute */
+        z-index: 1001;
+        margin-left: auto; /* Push to the right */
     }
     
     .nav-logo {
@@ -2396,10 +2434,23 @@ select:focus {
 
 /* Final Mobile Optimizations */
 @media (max-width: 768px) {
+    /* Ensure hamburger menu is always visible on mobile */
+    .hamburger {
+        display: flex !important;
+        position: relative !important;
+        z-index: 1001;
+        margin-left: auto;
+        margin-right: 0;
+    }
+    
+    /* Ensure nav-container has proper positioning context */
+    .nav-container {
+        position: relative;
+    }
+    
     /* Enhanced touch targets for all interactive elements */
     .btn,
     .nav-link,
-    .hamburger,
     .company-select-btn,
     .option-label,
     .text-input,
@@ -2634,6 +2685,23 @@ select:focus {
     .nav-container {
         padding: 0 1rem;
     }
+    
+    /* Ensure hamburger menu is visible on small mobile */
+    .hamburger {
+        display: flex !important;
+        position: absolute !important;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 1001;
+        margin-left: auto;
+        margin-right: 0;
+    }
+    
+    /* Ensure nav-container has proper positioning context */
+    .nav-container {
+        position: relative;
+    }
 
     /* Enhanced mobile typography */
     .hero-text h1 {
@@ -2802,6 +2870,18 @@ select:focus {
 
     .nav-container {
         padding: 0 0.75rem;
+    }
+    
+    /* Ensure hamburger menu is visible on ultra small mobile */
+    .hamburger {
+        display: flex !important;
+        position: absolute !important;
+        right: 0.75rem;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 1001;
+        margin-left: auto;
+        margin-right: 0;
     }
 
     .hero-text h1 {
@@ -3024,4 +3104,41 @@ html {
 
 ::-webkit-scrollbar-thumb:hover {
     background: var(--primary-dark);
+}
+
+/* Final Hamburger Menu Visibility Fix */
+@media (max-width: 768px) {
+    .hamburger {
+        display: flex !important;
+        position: relative !important;
+        z-index: 1001 !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        margin-left: auto;
+        margin-right: 0;
+        pointer-events: auto !important;
+    }
+    
+    /* Ensure nav-container has proper positioning context */
+    .nav-container {
+        position: relative;
+        justify-content: space-between;
+        padding-right: 1rem;
+    }
+    
+    /* Force hamburger visibility on all mobile devices */
+    .navbar .hamburger {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+}
+
+/* Additional mobile breakpoint for smaller screens */
+@media (max-width: 1024px) {
+    .hamburger {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
 }
