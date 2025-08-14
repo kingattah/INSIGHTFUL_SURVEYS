@@ -88,16 +88,27 @@ class DashboardManager {
     async loadSurveyData() {
         console.log('Loading survey data...');
         try {
-            // Clear any existing sample data to ensure clean state
-            this.clearSampleData();
+            // Try to load from Supabase first
+            if (window.SurveyService) {
+                console.log('Attempting to load data from Supabase...');
+                const result = await window.SurveyService.getAllResponses();
+                
+                if (result.success) {
+                    this.surveyData = result.data;
+                    console.log('✅ Data loaded from Supabase:', this.surveyData.length, 'items');
+                } else {
+                    console.warn('⚠️ Supabase load failed, falling back to localStorage:', result.message);
+                    this.surveyData = this.getStoredSurveyData();
+                }
+            } else {
+                console.log('Supabase not available, using localStorage');
+                this.surveyData = this.getStoredSurveyData();
+            }
             
-            // Load data from localStorage only - no random data generation
-            this.surveyData = this.getStoredSurveyData();
-            console.log('Stored survey data:', this.surveyData.length, 'items');
+            console.log('Final survey data:', this.surveyData.length, 'items');
             
             if (this.surveyData.length === 0) {
-                console.log('No stored data found. Dashboard will show empty state.');
-                // Don't create sample data - just show empty dashboard
+                console.log('No data found. Dashboard will show empty state.');
                 this.showInfo('No survey responses found. Data will appear here once users complete surveys.');
             } else {
                 console.log(`Loaded ${this.surveyData.length} existing survey responses`);

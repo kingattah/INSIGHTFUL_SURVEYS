@@ -123,7 +123,16 @@
     </footer>
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="supabase-config.js"></script>
     <script src="script.js"></script>
     <script src="survey.js"></script>
+    <script>
+        // Initialize Supabase when page loads
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (window.initSupabase) {
+                await window.initSupabase();
+            }
+        });
+    </script>
 </body>
 </html>

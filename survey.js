@@ -210,8 +210,8 @@ class SurveyManager {
                         <input type="email" id="email" name="email" placeholder="Enter your email address" required>
                     </div>
                     <div class="form-group">
-                        <label for="phone">Phone Number *</label>
-                        <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required>
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" placeholder="Enter your phone number (optional)">
                     </div>
                 </div>
             </div>
@@ -360,7 +360,7 @@ class SurveyManager {
         const phone = document.getElementById('phone').value.trim();
         
         // Basic validation
-        if (!fullName || !position || !email || !phone) {
+        if (!fullName || !position || !email) {
             this.showError('Please fill in all required fields.');
             return false;
         }
@@ -372,12 +372,7 @@ class SurveyManager {
             return false;
         }
         
-        // Phone validation (basic)
-        const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
-        if (!phoneRegex.test(phone.replace(/[\s\-\(\)]/g, ''))) {
-            this.showError('Please enter a valid phone number.');
-            return false;
-        }
+
         
         this.userInfo = { fullName, position, email, phone };
         return true;
@@ -498,7 +493,7 @@ class SurveyManager {
         this.saveCurrentResponse();
         
         // Check if user info is complete
-        if (!this.userInfo.fullName || !this.userInfo.position || !this.userInfo.email || !this.userInfo.phone) {
+        if (!this.userInfo.fullName || !this.userInfo.position || !this.userInfo.email) {
             this.showError('Please complete your information before submitting the survey.');
             return;
         }
@@ -529,7 +524,7 @@ class SurveyManager {
         this.saveSurveyResponse();
     }
     
-    saveSurveyResponse() {
+    async saveSurveyResponse() {
         try {
             // Create survey response object with dynamic question mapping
             const surveyResponse = {
@@ -541,7 +536,7 @@ class SurveyManager {
                 full_name: this.userInfo.fullName,
                 position: this.userInfo.position,
                 email: this.userInfo.email,
-                phone: this.userInfo.phone
+                phone: this.userInfo.phone || ''
             };
             
             // Dynamically add up to 50 questions
@@ -551,21 +546,42 @@ class SurveyManager {
                 surveyResponse[questionKey] = this.responses[responseIndex] || '';
             }
             
-            // Get existing responses from localStorage
+            // Try to save to Supabase first
+            if (window.SurveyService) {
+                const result = await window.SurveyService.saveSurveyResponse(surveyResponse);
+                
+                if (result.success) {
+                    console.log('✅ Survey saved to Supabase successfully');
+                    this.showCompletionModal();
+                    return;
+                } else {
+                    console.warn('⚠️ Supabase save failed, falling back to localStorage:', result.message);
+                }
+            }
+            
+            // Fallback to localStorage if Supabase is not available
             const existingResponses = JSON.parse(localStorage.getItem('surveyResponses') || '[]');
-            
-            // Add new response
             existingResponses.push(surveyResponse);
-            
-            // Save back to localStorage (simulating CSV backend)
             localStorage.setItem('surveyResponses', JSON.stringify(existingResponses));
             
-            // Show completion modal
+            console.log('✅ Survey saved to localStorage (fallback)');
             this.showCompletionModal();
             
         } catch (error) {
             console.error('Error saving survey response:', error);
-            this.showError('Error saving your response. Please try again.');
+            
+            // Try localStorage as final fallback
+            try {
+                const existingResponses = JSON.parse(localStorage.getItem('surveyResponses') || '[]');
+                existingResponses.push(surveyResponse);
+                localStorage.setItem('surveyResponses', JSON.stringify(existingResponses));
+                
+                console.log('✅ Survey saved to localStorage (emergency fallback)');
+                this.showCompletionModal();
+            } catch (fallbackError) {
+                console.error('❌ All save methods failed:', fallbackError);
+                this.showError('Error saving your response. Please try again.');
+            }
         }
     }
     
